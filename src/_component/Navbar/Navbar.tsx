@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "../Logo/Logo";
 import { LuLogIn } from "react-icons/lu";
+import { BiDownload } from "react-icons/bi";
 
 const navItems = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "/about" },
-  { name: "Services", href: "/services" },
-  { name: "Contact", href: "/contact" },
+  { name: "Home", href: "/#" },
+  { name: "About", href: "/#about" },
+  { name: "Services", href: "/#services" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 export default function Navbar() {
@@ -48,13 +49,17 @@ export default function Navbar() {
             <FiSearch />
           </button> */}
 
-          <Link href="/login" className="nm-protrude px-5 py-2 rounded-xl font-semibold text-gray-700 active:nm-pressed flex items-center gap-2 hover:nm-dent">
+          <Link
+            href="/login"
+            className="nm-protrude px-5 py-2 rounded-xl font-semibold text-gray-700 active:nm-pressed flex items-center gap-2 hover:nm-dent"
+          >
             <span>Login</span>
             <LuLogIn />
           </Link>
-          <Link href="/register" className="nm-protrude px-5 py-2 rounded-xl font-semibold text-gray-700 active:nm-pressed hover:nm-dent">
-            Get Started
-          </Link>
+          <button className="nm-protrude px-5 py-2 rounded-xl font-semibold text-gray-700 active:nm-pressed hover:nm-dent flex items-center gap-2">
+            <span>Resume</span>
+            <BiDownload />
+          </button>
         </div>
       </nav>
     </header>
