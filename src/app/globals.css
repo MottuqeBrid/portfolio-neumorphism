@@ -1,2 +1,11 @@
 @import "tailwindcss";
 @import "tailwindcss-neumorphism-ui";
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background: #e0e5ec;
+}

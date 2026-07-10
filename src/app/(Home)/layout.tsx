@@ -1,10 +1,15 @@
+import type { ReactNode } from "react";
 import Navbar from "@/_component/Navbar/Navbar";
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function HomeLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
-    <section className=" min-h-screen min-w-screen bg-gray-200">
+    <div className="min-h-screen overflow-x-hidden bg-[#e0e5ec] text-slate-800">
       <Navbar />
-      {children}
-    </section>
+      <main className="relative mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8">
+        {children}
+      </main>
+    </div>
   );
 }
