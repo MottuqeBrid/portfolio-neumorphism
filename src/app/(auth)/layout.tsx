@@ -8,7 +8,7 @@ export default function AuthLayout({
   return (
     <section className="w-full h-full">
       <Navbar />
-      <main className="w-full">{children}</main>
+      <main className="w-full pt-24 sm:pt-28">{children}</main>
     </section>
   );
 }

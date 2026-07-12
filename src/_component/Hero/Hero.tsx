@@ -8,21 +8,36 @@ import { FiDownload } from "react-icons/fi";
 import { GrGithub, GrLinkedin } from "react-icons/gr";
 import ME from "@/image/me.jpg";
 
+import type { IconType } from "react-icons";
+import {
+  SiExpress,
+  SiMongodb,
+  SiNextdotjs,
+  SiNodedotjs,
+  SiReact,
+  SiTailwindcss,
+} from "react-icons/si";
+
+type TechItem = {
+  name: string;
+  icon: IconType;
+  tint: string;
+};
+
 const roleTitles = [
   "Next.js Developer",
   "Frontend Engineer",
   "MERN Stack Developer",
 ];
 
-const techStack = [
-  "React",
-  "Next.js",
-  "Node.js",
-  "Express",
-  "MongoDB",
-  "Tailwind CSS",
+const techStack: TechItem[] = [
+  { name: "React", icon: SiReact, tint: "#61dafb" },
+  { name: "Next.js", icon: SiNextdotjs, tint: "#111111" },
+  { name: "Node.js", icon: SiNodedotjs, tint: "#539e43" },
+  { name: "Express", icon: SiExpress, tint: "#444444" },
+  { name: "MongoDB", icon: SiMongodb, tint: "#00ed64" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, tint: "#06b6d4" },
 ];
-
 const socialLinks = [
   {
     label: "GitHub",
@@ -50,7 +65,7 @@ export default function Hero({ id }: { id?: string }) {
   return (
     <section
       id={id}
-      className="grid grid-cols-1 items-center gap-10 px-4 sm:px-6 md:grid-cols-2 lg:gap-14 lg:px-0 w-full"
+      className="grid grid-cols-1 items-center gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:px-0 w-full"
     >
       <div className="flex flex-col justify-center gap-6 order-2 lg:order-1">
         <div className="flex flex-wrap items-center gap-3">
@@ -88,12 +103,13 @@ export default function Hero({ id }: { id?: string }) {
         </div>
 
         <ul className="flex flex-wrap gap-2" aria-label="Primary tech stack">
-          {techStack.map((technology) => (
+          {techStack.map(({ name, icon: Icon, tint }) => (
             <li
-              key={technology}
-              className="nm-protrude rounded-full px-4 py-2 text-sm font-bold text-slate-700 hover:nm-distance-1"
+              key={name}
+              className="nm-protrude flex items-center gap-2 rounded-full px-4 py-2 text-sm font-bold text-slate-700"
             >
-              {technology}
+              <Icon size={14} style={{ color: tint }} />
+              {name}
             </li>
           ))}
         </ul>

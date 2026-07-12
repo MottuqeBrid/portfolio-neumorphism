@@ -10,7 +10,8 @@ import { BiDownload } from "react-icons/bi";
 const navItems = [
   { name: "Home", href: "/#hero", hash: "" },
   { name: "About", href: "/#about", hash: "#about" },
-  { name: "Services", href: "/#services", hash: "#services" },
+  { name: "Skills", href: "/#skills", hash: "#skills" },
+  { name: "Projects", href: "/#projects", hash: "#projects" },
   { name: "Contact", href: "/#contact", hash: "#contact" },
 ];
 
@@ -18,6 +19,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const isHome = pathname === "/";
   const isLogin = pathname === "/login";
@@ -38,9 +40,32 @@ export default function Navbar() {
     };
   }, [pathname]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolled = window.scrollY > 8;
+      setIsScrolled(scrolled);
+      if (scrolled) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-white/60 bg-[#e0e5ec]/95 shadow-[0_10px_30px_rgba(148,163,184,0.16)] backdrop-blur">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <header className="fixed inset-x-0 top-0 z-50">
+      <nav
+        className={`mx-auto flex items-center justify-between gap-4 transition-all duration-300 ${
+          isScrolled
+            ? "nm-protrude mt-2 max-w-7xl rounded-2xl bg-[#e0e5ec]/80 px-3 py-2.5 backdrop-blur-md sm:mt-3 sm:px-4"
+            : "mt-0 max-w-7xl rounded-none bg-transparent px-4 py-4 sm:px-6 lg:px-8"
+        }`}
+      >
         <Logo />
 
         <ul className="nm-dent hidden items-center gap-1 rounded-2xl p-1.5 lg:flex">
@@ -108,13 +133,15 @@ export default function Navbar() {
       <div
         id="mobile-navigation"
         className={`overflow-hidden transition-all duration-300 lg:hidden ${
-          isMenuOpen
-            ? "max-h-128 border-t border-white/60 opacity-100"
-            : "max-h-0 opacity-0"
+          isMenuOpen ? "max-h-128 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="mx-auto max-w-7xl px-4 pb-5 sm:px-6">
-          <div className="nm-protrude rounded-2xl p-3">
+        <div
+          className={`mx-auto px-4 pb-5 pt-3 transition-all duration-300 sm:px-6 ${
+            isScrolled ? "max-w-6xl" : "max-w-7xl"
+          }`}
+        >
+          <div className="nm-protrude rounded-2xl bg-[#e0e5ec]/80 p-3 backdrop-blur-md">
             <ul className="grid gap-2 sm:grid-cols-2">
               {navItems.map((item) => {
                 const isActive = isNavItemActive(item.hash);

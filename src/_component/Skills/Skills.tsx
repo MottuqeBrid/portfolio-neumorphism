@@ -111,84 +111,95 @@ const focusAreas = [
 
 export default function Skills({ id }: { id: string }) {
   return (
-    <section id={id} className="mt-12" aria-labelledby="skills-heading">
-      <div className="max-w-3xl space-y-4">
-        <span className="inline-flex rounded-full border border-primary/20 bg-primary/10 px-4 py-2 text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-          Skills
-        </span>
+    <section
+      id={id}
+      className="mt-16 px-4 sm:px-6 lg:px-0"
+      aria-labelledby="skills-heading"
+    >
+      <div className="max-w-3xl space-y-5">
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="nm-dent inline-flex rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.24em] text-sky-700">
+            Skills
+          </span>
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+        </div>
         <h2
           id="skills-heading"
-          className="text-3xl font-bold tracking-tight text-base-content sm:text-4xl lg:text-5xl"
+          className="text-3xl font-black leading-[1.15] tracking-tight text-slate-800 sm:text-4xl lg:text-5xl"
         >
           A practical stack for building modern web products.
         </h2>
-        <p className="max-w-2xl text-base leading-8 text-base-content/75 sm:text-lg">
+        <p className="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
           My toolkit is centered on JavaScript and TypeScript ecosystems, with a
           strong focus on React-based frontend work, API-driven backend
           delivery, and tools that keep projects maintainable.
         </p>
-        <div className="flex flex-wrap gap-3 pt-1 text-sm text-base-content/75">
+        <ul
+          className="flex flex-wrap gap-2.5 pt-1"
+          aria-label="Focus areas"
+        >
           {focusAreas.map((item) => (
-            <span
+            <li
               key={item}
-              className="rounded-full border border-base-300 bg-base-200/80 px-4 py-2"
+              className="nm-protrude rounded-full px-4 py-2 text-sm font-bold text-slate-700"
             >
               {item}
-            </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
 
-      <div className="mt-10 divide-y divide-base-300 border-y border-base-300">
+      <div className="mt-12 grid gap-6 sm:grid-cols-2">
         {skillGroups.map(
           ({ index, title, description, Icon, accent, skills }) => (
             <article
               key={title}
-              className="group grid gap-6 py-8 sm:grid-cols-[auto_1fr] sm:gap-8 lg:grid-cols-[3rem_16rem_1fr]"
+              className="nm-protrude group flex flex-col gap-5 rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 sm:p-7"
             >
-              <span
-                className="hidden text-sm font-black tabular-nums lg:block"
-                style={{ color: accent }}
-              >
-                {index}
-              </span>
-
-              <div className="flex items-start gap-4 lg:flex-col lg:items-start lg:gap-3">
+              <div className="flex items-start gap-4">
                 <div
-                  className="inline-flex shrink-0 rounded-2xl p-3"
-                  style={{ backgroundColor: `${accent}1a`, color: accent }}
+                  className="nm-dent inline-flex shrink-0 rounded-2xl p-3"
+                  style={{ color: accent }}
                 >
                   <Icon size={22} />
                 </div>
-                <div>
-                  <h3 className="text-lg font-bold text-base-content sm:text-xl">
-                    {title}
-                  </h3>
-                  <p className="mt-1 text-sm leading-6 text-base-content/70">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="text-sm font-black tabular-nums"
+                      style={{ color: accent }}
+                    >
+                      {index}
+                    </span>
+                    <h3 className="text-lg font-bold text-slate-800 sm:text-xl">
+                      {title}
+                    </h3>
+                  </div>
+                  <p className="mt-1 text-sm leading-6 text-slate-600">
                     {description}
                   </p>
                 </div>
               </div>
 
-              <div className="flex flex-wrap content-start gap-2.5">
+              <ul className="mt-auto flex flex-wrap content-start gap-2.5">
                 {skills.map(({ name, icon: SkillIcon, tint }) => (
-                  <div
+                  <li
                     key={name}
-                    className="flex items-center gap-2 rounded-full border border-base-300 bg-base-100 py-2 pl-2 pr-4 transition-colors duration-200 hover:border-transparent"
+                    className="nm-protrude-sm flex items-center gap-2 rounded-full border border-transparent py-1.5 pl-1.5 pr-3.5 transition-all duration-200 hover:-translate-y-0.5 active:nm-pressed"
                     style={{ ["--tint" as string]: tint }}
                   >
                     <span
-                      className="inline-flex rounded-full p-1.5"
-                      style={{ backgroundColor: `${tint}20`, color: tint }}
+                      className="nm-dent-sm inline-flex rounded-full p-1.5"
+                      style={{ color: tint }}
                     >
                       <SkillIcon size={16} />
                     </span>
-                    <span className="text-sm font-medium text-base-content">
+                    <span className="text-sm font-bold text-slate-700">
                       {name}
                     </span>
-                  </div>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </article>
           ),
         )}
