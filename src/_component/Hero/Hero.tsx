@@ -50,7 +50,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="grid min-h-[calc(100vh-8rem)] items-center gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:px-0 w-full"
+      className="grid grid-cols-1 items-center gap-10 px-4 sm:px-6 md:grid-cols-2 lg:gap-14 lg:px-0 w-full"
     >
       <div className="flex flex-col justify-center gap-6 order-2 lg:order-1">
         <div className="flex flex-wrap items-center gap-3">
