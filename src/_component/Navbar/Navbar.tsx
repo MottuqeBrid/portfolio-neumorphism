@@ -8,7 +8,7 @@ import { LuLogIn, LuMenu, LuX } from "react-icons/lu";
 import { BiDownload } from "react-icons/bi";
 
 const navItems = [
-  { name: "Home", href: "/", hash: "" },
+  { name: "Home", href: "/#hero", hash: "" },
   { name: "About", href: "/#about", hash: "#about" },
   { name: "Services", href: "/#services", hash: "#services" },
   { name: "Contact", href: "/#contact", hash: "#contact" },

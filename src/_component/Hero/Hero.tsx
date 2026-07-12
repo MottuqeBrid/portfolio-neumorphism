@@ -6,6 +6,7 @@ import { BsWhatsapp } from "react-icons/bs";
 import { FaFacebook } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { GrGithub, GrLinkedin } from "react-icons/gr";
+import ME from "@/image/me.jpg";
 
 const roleTitles = [
   "Next.js Developer",
@@ -47,8 +48,11 @@ const socialLinks = [
 
 export default function Hero() {
   return (
-    <section className="grid min-h-[calc(100vh-8rem)] items-center gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:gap-14">
-      <div className="flex flex-col justify-center gap-6">
+    <section
+      id="hero"
+      className="grid min-h-[calc(100vh-8rem)] items-center gap-10 px-4 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-14 lg:px-0 w-full"
+    >
+      <div className="flex flex-col justify-center gap-6 order-2 lg:order-1">
         <div className="flex flex-wrap items-center gap-3">
           <span className="nm-dent inline-flex rounded-full px-4 py-2 text-sm font-bold text-sky-700">
             Welcome to Code House
@@ -57,12 +61,12 @@ export default function Hero() {
         </div>
 
         <div className="space-y-5">
-          <h1 className="max-w-3xl text-4xl font-black leading-[1.08] text-slate-800 sm:text-5xl lg:text-6xl">
+          <h1 className="max-w-3xl text-3xl font-black leading-[1.15] text-slate-800 sm:text-4xl sm:leading-[1.1] lg:text-5xl xl:text-6xl xl:leading-[1.08]">
             Hi, I am <span className="text-sky-700">Md. Mottuqe Brid</span>, a
             web developer building polished digital products.
           </h1>
 
-          <div className="nm-dent w-full max-w-2xl overflow-hidden rounded-2xl px-2 py-3">
+          <div className="nm-dent w-full max-w-full overflow-hidden rounded-2xl px-2 py-3 sm:max-w-2xl">
             <Marquee speed={36} pauseOnHover gradient={false} autoFill>
               {roleTitles.map((title) => (
                 <span
@@ -76,7 +80,7 @@ export default function Hero() {
             </Marquee>
           </div>
 
-          <p className="max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
+          <p className="max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
             I build fast, scalable web applications with clean UI, responsive
             layouts, and maintainable frontend architecture. My main stack is
             React, Next.js, Node.js, Express, and MongoDB.
@@ -94,10 +98,10 @@ export default function Hero() {
           ))}
         </ul>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+        <div className="flex flex-wrap items-center gap-4">
           <button
             type="button"
-            className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] sm:w-auto"
+            className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
           >
             <span>Download Resume</span>
             <FiDownload className="text-lg" aria-hidden="true" />
@@ -124,20 +128,20 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="flex items-center justify-center lg:justify-end">
-        <div className="nm-protrude relative aspect-square w-full max-w-[20rem] overflow-hidden rounded-4xl p-4 sm:max-w-100 lg:max-w-120">
+      <div className="order-1 flex items-center justify-center lg:order-2 lg:justify-end">
+        <div className="nm-protrude relative aspect-square w-full max-w-[16rem] overflow-hidden rounded-4xl p-3 xs:max-w-[18rem] sm:max-w-88 sm:p-4 lg:max-w-104 xl:max-w-120">
           <div className="nm-dent h-full overflow-hidden rounded-3xl bg-slate-200">
             <Image
               className="h-full w-full object-cover"
-              src="/me.jpg"
+              src={ME}
               alt="Md. Mottuqe Brid"
               width={500}
               height={500}
               priority
-              sizes="(min-width: 1024px) 30rem, (min-width: 640px) 25rem, 20rem"
+              sizes="(min-width: 1024px) 30rem, (min-width: 640px) 22rem, 16rem"
             />
           </div>
-          <div className="absolute bottom-5 left-5 rounded-2xl bg-[#e0e5ec]/90 px-4 py-3 shadow-[8px_8px_18px_rgba(148,163,184,0.35),-8px_-8px_18px_rgba(255,255,255,0.65)] backdrop-blur">
+          <div className="absolute bottom-3 left-3 rounded-2xl bg-[#e0e5ec]/90 px-3 py-2 shadow-[8px_8px_18px_rgba(148,163,184,0.35),-8px_-8px_18px_rgba(255,255,255,0.65)] backdrop-blur sm:bottom-5 sm:left-5 sm:px-4 sm:py-3">
             <p className="text-xs font-bold uppercase text-slate-500">
               Available for
             </p>

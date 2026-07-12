@@ -3,7 +3,7 @@ import Hero from "@/_component/Hero/Hero";
 
 export default function Home() {
   return (
-    <div className="">
+    <div className="w-full">
       <Hero />
       <About />
     </div>
