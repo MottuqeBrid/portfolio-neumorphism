@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   const cookieConfig = getAuthCookieConfig();
   const token = req.cookies.get(cookieConfig.name)?.value;
-  const verifyResult = verifyAdminToken(token);
+  const verifyResult = await verifyAdminToken(token);
 
   if (!verifyResult.valid) {
     return NextResponse.json(
