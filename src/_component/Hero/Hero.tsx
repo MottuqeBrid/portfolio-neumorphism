@@ -46,10 +46,10 @@ const socialLinks = [
   },
 ];
 
-export default function Hero() {
+export default function Hero({ id }: { id?: string }) {
   return (
     <section
-      id="hero"
+      id={id}
       className="grid grid-cols-1 items-center gap-10 px-4 sm:px-6 md:grid-cols-2 lg:gap-14 lg:px-0 w-full"
     >
       <div className="flex flex-col justify-center gap-6 order-2 lg:order-1">
@@ -91,7 +91,7 @@ export default function Hero() {
           {techStack.map((technology) => (
             <li
               key={technology}
-              className="nm-protrude rounded-full px-4 py-2 text-sm font-bold text-slate-700"
+              className="nm-protrude rounded-full px-4 py-2 text-sm font-bold text-slate-700 hover:nm-distance-1"
             >
               {technology}
             </li>

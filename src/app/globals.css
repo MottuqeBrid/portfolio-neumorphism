@@ -9,3 +9,7 @@ html {
 body {
   background: #e0e5ec;
 }
+
+.group:hover [style*="--tint"] {
+  border-color: var(--tint);
+}
