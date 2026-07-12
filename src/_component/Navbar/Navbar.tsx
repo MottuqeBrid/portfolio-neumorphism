@@ -92,7 +92,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden items-center gap-3 md:flex">
             <Link
-              href="/login"
+              href="/admin"
               className={`flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-bold transition-all duration-200 outline-none active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] ${
                 isLogin
                   ? "nm-pressed text-sky-700"
@@ -100,7 +100,7 @@ export default function Navbar() {
               }`}
             >
               <LuLogIn className="text-lg" aria-hidden="true" />
-              <span>Login</span>
+              <span>Admin</span>
             </Link>
             <button
               type="button"
