@@ -9,11 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^6.0.2",
     "@supabase/supabase-js": "^2.110.2",
     "@tiptap/core": "^3.27.4",
     "@tiptap/extension-code-block-lowlight": "^3.27.4",
     "@tiptap/extension-collaboration": "^3.27.4",
-    "@tiptap/extension-collaboration-cursor": "^2.26.2",
     "@tiptap/extension-color": "^3.27.4",
     "@tiptap/extension-font-family": "^3.27.4",
     "@tiptap/extension-highlight": "^3.27.4",
