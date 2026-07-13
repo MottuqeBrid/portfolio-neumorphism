@@ -42,6 +42,24 @@ export function splitList(value: string): string[] {
     .filter(Boolean);
 }
 
+export function toFormValues(project: ProjectInstance): ProjectFormValues {
+  return {
+    title: project.title ?? "",
+    description: project.description ?? "",
+    longDescription: project.longDescription ?? "",
+    thumbnail: project.thumbnail ?? "",
+    techStack: project.techStack?.join(", ") ?? "",
+    keyFeatures: project.keyFeatures?.join(", ") ?? "",
+    images: project.images ?? [],
+    live: project.links?.live ?? "",
+    source: project.links?.source ?? "",
+    githubClient: project.links?.githubClient ?? "",
+    githubServer: project.links?.githubServer ?? "",
+    isCompleted: project.isCompleted ?? false,
+    showInUI: project.showInUI ?? true,
+  };
+}
+
 // Build the JSON payload expected by POST /api/projects from form values.
 export function toProjectPayload(values: ProjectFormValues) {
   return {

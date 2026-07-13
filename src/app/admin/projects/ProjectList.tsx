@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import {
   FiCheckCircle,
+  FiEdit2,
   FiExternalLink,
   FiEyeOff,
   FiGithub,
@@ -16,6 +17,8 @@ type ProjectListProps = {
   isLoading: boolean;
   error: string;
   onDeleted: (id: string) => void;
+  onEdit: (project: ProjectInstance) => void;
+  editingId: string | null;
 };
 
 function LinkChip({
@@ -49,19 +52,26 @@ export default function ProjectList({
   isLoading,
   error,
   onDeleted,
+  onEdit,
+  editingId,
 }: ProjectListProps) {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteError, setDeleteError] = useState("");
+  const [pendingDelete, setPendingDelete] = useState<ProjectInstance | null>(
+    null,
+  );
 
-  const handleDelete = async (id: string) => {
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+
     setDeleteError("");
-    setDeletingId(id);
+    setDeletingId(pendingDelete._id);
 
     try {
       const res = await fetch("/api/projects", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id: pendingDelete._id }),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -71,11 +81,12 @@ export default function ProjectList({
         return;
       }
 
-      onDeleted(id);
+      onDeleted(pendingDelete._id);
     } catch {
       setDeleteError("Network error while deleting. Please try again.");
     } finally {
       setDeletingId(null);
+      setPendingDelete(null);
     }
   };
 
@@ -159,15 +170,30 @@ export default function ProjectList({
                   ) : null}
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleDelete(project._id)}
-                  disabled={deletingId === project._id}
-                  aria-label={`Delete ${project.title}`}
-                  className="nm-protrude inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-rose-500 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-rose-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <FiTrash2 size={16} aria-hidden="true" />
-                </button>
+                <div className="flex shrink-0 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => onEdit(project)}
+                    disabled={editingId !== null}
+                    aria-label={`Edit ${project.title}`}
+                    className={`nm-protrude inline-flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-50 ${
+                      editingId === project._id
+                        ? "text-sky-600 ring-2 ring-sky-400/60"
+                        : "text-sky-500"
+                    }`}
+                  >
+                    <FiEdit2 size={16} aria-hidden="true" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPendingDelete(project)}
+                    disabled={editingId !== null}
+                    aria-label={`Delete ${project.title}`}
+                    className="nm-protrude inline-flex h-10 w-10 items-center justify-center rounded-xl text-rose-500 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-rose-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <FiTrash2 size={16} aria-hidden="true" />
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
@@ -226,6 +252,74 @@ export default function ProjectList({
           </li>
         ))}
       </ul>
+
+      {pendingDelete ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-white/30 backdrop-blur-md"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-dialog-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setPendingDelete(null);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setPendingDelete(null);
+          }}
+        >
+          <div className="nm-protrude mx-4 flex w-full max-w-sm flex-col gap-5 rounded-3xl p-6 sm:p-7 opacity-100">
+            <div className="flex items-center gap-3">
+              <div className="nm-dent flex h-12 w-12 items-center justify-center rounded-2xl text-rose-600">
+                <FiTrash2 size={22} aria-hidden="true" />
+              </div>
+              <div>
+                <h3
+                  id="delete-dialog-title"
+                  className="text-base font-black tracking-tight text-slate-900"
+                >
+                  Delete project?
+                </h3>
+                <p className="mt-0.5 text-sm font-medium text-slate-800">
+                  This action cannot be undone.
+                </p>
+              </div>
+            </div>
+
+            <p className="text-sm font-medium">
+              Are you sure you want to delete{" "}
+              <span className="font-bold">{`"${pendingDelete.title}"`}</span>?
+            </p>
+
+            {deleteError && deletingId === null ? (
+              <p
+                role="alert"
+                className="nm-dent rounded-xl px-4 py-3 text-sm font-semibold text-rose-600"
+              >
+                {deleteError}
+              </p>
+            ) : null}
+
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setPendingDelete(null)}
+                disabled={deletingId !== null}
+                className="nm-protrude inline-flex h-11 flex-1 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-slate-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-slate-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                disabled={deletingId !== null}
+                className="nm-protrude inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-rose-500/10 px-5 text-sm font-black text-rose-700 transition-all duration-200 outline-none hover:bg-rose-500/20 active:nm-pressed focus-visible:ring-2 focus-visible:ring-rose-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <FiTrash2 size={15} aria-hidden="true" />
+                {deletingId !== null ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

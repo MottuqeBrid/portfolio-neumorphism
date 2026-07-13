@@ -1,11 +1,12 @@
 "use client";
 
 import type { SyntheticEvent } from "react";
-import { useState } from "react";
-import { FiPlus } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { FiPlus, FiSave, FiX } from "react-icons/fi";
 import ImageUpload from "./ImageUpload";
 import {
   emptyProjectForm,
+  toFormValues,
   toProjectPayload,
   type ProjectFormValues,
   type ProjectInstance,
@@ -18,6 +19,9 @@ const labelClass = "text-sm font-bold text-slate-700";
 
 type ProjectFormProps = {
   onCreated: (project: ProjectInstance) => void;
+  editingProject: ProjectInstance | null;
+  onUpdated: (project: ProjectInstance) => void;
+  onCancelEdit: () => void;
 };
 
 function Field({
@@ -38,11 +42,28 @@ function Field({
   );
 }
 
-export default function ProjectForm({ onCreated }: ProjectFormProps) {
+export default function ProjectForm({
+  onCreated,
+  editingProject,
+  onUpdated,
+  onCancelEdit,
+}: ProjectFormProps) {
   const [values, setValues] = useState<ProjectFormValues>(emptyProjectForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const isEditing = editingProject !== null;
+
+  useEffect(() => {
+    if (editingProject) {
+      setValues(toFormValues(editingProject));
+      setError("");
+      setSuccess("");
+    } else {
+      setValues(emptyProjectForm);
+    }
+  }, [editingProject]);
 
   const update = <Key extends keyof ProjectFormValues>(
     key: Key,
@@ -66,23 +87,39 @@ export default function ProjectForm({ onCreated }: ProjectFormProps) {
     setIsSubmitting(true);
 
     try {
-      const res = await fetch("/api/projects", {
-        method: "POST",
+      const url = "/api/projects";
+      const method = isEditing ? "PATCH" : "POST";
+      const body = isEditing
+        ? { id: editingProject._id, ...toProjectPayload(values) }
+        : toProjectPayload(values);
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(toProjectPayload(values)),
+        body: JSON.stringify(body),
       });
 
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        setError(data?.message || "Unable to create project. Please try again.");
+        setError(
+          data?.message ||
+            `Unable to ${isEditing ? "update" : "create"} project. Please try again.`,
+        );
         return;
       }
 
-      setSuccess("Project created successfully.");
-      setValues(emptyProjectForm);
-      if (data?.project) {
-        onCreated(data.project as ProjectInstance);
+      if (isEditing) {
+        setSuccess("Project updated successfully.");
+        if (data?.project) {
+          onUpdated(data.project as ProjectInstance);
+        }
+      } else {
+        setSuccess("Project created successfully.");
+        setValues(emptyProjectForm);
+        if (data?.project) {
+          onCreated(data.project as ProjectInstance);
+        }
       }
     } catch {
       setError("Network error. Please check your connection and try again.");
@@ -98,10 +135,12 @@ export default function ProjectForm({ onCreated }: ProjectFormProps) {
     >
       <div>
         <h2 className="text-xl font-black tracking-tight text-slate-800">
-          Add a project
+          {isEditing ? "Edit project" : "Add a project"}
         </h2>
         <p className="mt-1 text-sm text-slate-600">
-          Fill in the details below to publish a new project.
+          {isEditing
+            ? "Update the details of your project."
+            : "Fill in the details below to publish a new project."}
         </p>
       </div>
 
@@ -252,14 +291,39 @@ export default function ProjectForm({ onCreated }: ProjectFormProps) {
         </p>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:nm-protrude"
-      >
-        <FiPlus className="text-lg" aria-hidden="true" />
-        <span>{isSubmitting ? "Adding..." : "Add project"}</span>
-      </button>
+      <div className="flex gap-3">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="nm-protrude inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:nm-protrude"
+        >
+          {isEditing ? (
+            <FiSave className="text-lg" aria-hidden="true" />
+          ) : (
+            <FiPlus className="text-lg" aria-hidden="true" />
+          )}
+          <span>
+            {isSubmitting
+              ? isEditing
+                ? "Saving..."
+                : "Adding..."
+              : isEditing
+                ? "Save changes"
+                : "Add project"}
+          </span>
+        </button>
+        {isEditing ? (
+          <button
+            type="button"
+            onClick={onCancelEdit}
+            disabled={isSubmitting}
+            className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-slate-600 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-slate-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <FiX className="text-lg" aria-hidden="true" />
+            <span>Cancel</span>
+          </button>
+        ) : null}
+      </div>
     </form>
   );
 }
