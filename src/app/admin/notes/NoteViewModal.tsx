@@ -1,7 +1,11 @@
 "use client";
 
 import { FiX, FiClock, FiFile, FiImage } from "react-icons/fi";
-import { tiptapToHtml, isLegacyEditorJsData, legacyEditorJsToHtml } from "@/components/editor";
+import {
+  tiptapToHtml,
+  isLegacyEditorJsData,
+  legacyEditorJsToHtml,
+} from "@/_components/editor";
 
 type NoteData = {
   _id: string;

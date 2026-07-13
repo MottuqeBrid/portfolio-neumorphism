@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import Navbar from "@/_component/Navbar/Navbar";
-import ScrollToTop from "@/_component/ScrollToTop/ScrollToTop";
+import Navbar from "@/_components/Navbar/Navbar";
+import ScrollToTop from "@/_components/ScrollToTop/ScrollToTop";
 
 export default function HomeLayout({
   children,

@@ -15,10 +15,10 @@ import {
 import NoteViewModal from "./NoteViewModal";
 import ImageUpload from "../projects/ImageUpload";
 import FileUpload from "./FileUpload";
-import type { TiptapEditorHandle } from "@/components/editor";
+import type { TiptapEditorHandle } from "@/_components/editor";
 
 const TiptapEditor = dynamic(
-  () => import("@/components/editor").then((m) => m.TiptapEditor),
+  () => import("@/_components/editor").then((m) => m.TiptapEditor),
   {
     ssr: false,
     loading: () => (
