@@ -54,7 +54,7 @@ export default function AdminNavbar() {
       <nav
         className={`mx-auto flex items-center justify-between gap-4 transition-all duration-300 ${
           isScrolled
-            ? "nm-protrude mt-2 max-w-6xl rounded-2xl bg-[#e0e5ec]/80 px-3 py-2.5 backdrop-blur-md sm:mt-3 sm:px-4"
+            ? "nm-protrude mt-2 max-w-7xl rounded-2xl bg-[#e0e5ec]/80 px-3 py-2.5 backdrop-blur-md sm:mt-3 sm:px-4"
             : "mt-0 max-w-7xl rounded-none bg-transparent px-4 py-4 sm:px-6 lg:px-8"
         }`}
       >
