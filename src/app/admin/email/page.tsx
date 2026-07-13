@@ -197,7 +197,7 @@ export default function EmailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
+    <div className="mx-auto w-full space-y-6 px-4 py-8 sm:px-6">
       <div>
         <h1 className="text-2xl font-black tracking-tight text-slate-800 sm:text-3xl">
           Email
@@ -402,7 +402,7 @@ export default function EmailPage() {
           onClick={() => setViewingEmail(null)}
         >
           <div
-            className="nm-protrude mx-4 flex max-h-[80vh] w-full max-w-2xl flex-col gap-5 rounded-3xl p-6 sm:p-8"
+            className="nm-protrude mx-4 flex max-h-[80vh] w-full max-w-6xl flex-col gap-5 rounded-3xl p-6 sm:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between gap-4">

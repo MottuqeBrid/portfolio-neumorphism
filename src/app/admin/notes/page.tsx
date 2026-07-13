@@ -237,7 +237,7 @@ export default function NotesPage() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 px-4 py-8 sm:px-6">
+    <div className="mx-auto w-full space-y-6 px-4 py-8 sm:px-6">
       <div>
         <h1 className="text-2xl font-black tracking-tight text-slate-800 sm:text-3xl">
           Notes

@@ -22,7 +22,7 @@ export default async function ProjectsPage() {
 
   return (
     <div className="w-full space-y-8">
-      <div className="max-w-3xl space-y-3">
+      <div className="w-full space-y-3">
         <span className="nm-dent inline-flex rounded-full px-4 py-2 text-sm font-bold uppercase tracking-[0.24em] text-sky-700">
           Projects
         </span>

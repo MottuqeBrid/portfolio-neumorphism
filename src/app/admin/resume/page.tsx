@@ -85,14 +85,18 @@ export default function ResumePage() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        setUploadError(data?.message || "Unable to save resume. Please try again.");
+        setUploadError(
+          data?.message || "Unable to save resume. Please try again.",
+        );
         return;
       }
 
       setResume(data.resume as ResumeData);
       setUploadSuccess("Resume updated successfully.");
     } catch {
-      setUploadError("Network error. Please check your connection and try again.");
+      setUploadError(
+        "Network error. Please check your connection and try again.",
+      );
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -110,7 +114,7 @@ export default function ResumePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6 px-4 py-8 sm:px-6">
+    <div className="mx-auto w-full space-y-6 px-4 py-8 sm:px-6">
       <div>
         <h1 className="text-2xl font-black tracking-tight text-slate-800 sm:text-3xl">
           Resume
