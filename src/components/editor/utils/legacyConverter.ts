@@ -9,9 +9,13 @@ type EditorJSOutput = {
   blocks: EditorBlock[];
 };
 
-// EditorJS stores inline formatting (bold, italic, marker, inline-code, links)
-// as HTML inside each block's text fields, so those are passed through as-is.
-// Only raw, non-HTML content (e.g. the code tool) is escaped.
+type ListItem = {
+  content?: string;
+  text?: string;
+  checked?: boolean;
+  items?: ListItem[];
+  meta?: { checked?: boolean };
+};
 
 function escapeHtml(str: string): string {
   return str
@@ -20,14 +24,6 @@ function escapeHtml(str: string): string {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 }
-
-type ListItem = {
-  content?: string;
-  text?: string;
-  checked?: boolean;
-  items?: ListItem[];
-  meta?: { checked?: boolean };
-};
 
 function renderList(
   items: unknown,
@@ -38,7 +34,6 @@ function renderList(
 
   const lis = items
     .map((item) => {
-      // Newer @editorjs/list: { content, meta, items: [...nested] }
       if (item && typeof item === "object") {
         const li = item as ListItem;
         const content = li.content ?? li.text ?? "";
@@ -52,7 +47,6 @@ function renderList(
         }
         return `<li>${content}${nested}</li>`;
       }
-      // Older @editorjs/list: plain string items
       return `<li>${String(item)}</li>`;
     })
     .join("");
@@ -80,7 +74,6 @@ function renderBlock(block: EditorBlock): string {
       return renderList(d.items, tag, false);
     }
 
-    // Standalone @editorjs/checklist tool (items: [{ text, checked }])
     case "checklist":
       return renderList(d.items, "ul", true);
 
@@ -95,14 +88,14 @@ function renderBlock(block: EditorBlock): string {
       return `<pre><code>${escapeHtml(String(d.code ?? ""))}</code></pre>`;
 
     case "delimiter":
-      return `<hr />`;
+      return "<hr />";
 
     case "image": {
       const file = d.file as { url?: string } | undefined;
       const url = String(file?.url ?? d.url ?? "");
       const caption = d.caption ? String(d.caption) : "";
       if (!url) return "";
-      return `<figure><img src="${url}" alt="${caption}" /><figcaption>${caption}</figcaption></figure>`;
+      return `<figure><img src="${escapeHtml(url)}" alt="${escapeHtml(caption)}" />${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ""}</figure>`;
     }
 
     default:
@@ -110,7 +103,13 @@ function renderBlock(block: EditorBlock): string {
   }
 }
 
-export function editorBlocksToHtml(data: EditorJSOutput): string {
+export function legacyEditorJsToHtml(data: EditorJSOutput): string {
   if (!data?.blocks?.length) return "";
   return data.blocks.map(renderBlock).join("\n");
+}
+
+export function isLegacyEditorJsData(json: unknown): boolean {
+  if (!json || typeof json !== "object") return false;
+  const obj = json as Record<string, unknown>;
+  return "blocks" in obj && Array.isArray(obj.blocks);
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { FiX, FiClock, FiFile, FiImage } from "react-icons/fi";
-import { editorBlocksToHtml } from "./htmlConverter";
+import { tiptapToHtml, isLegacyEditorJsData, legacyEditorJsToHtml } from "@/components/editor";
 
 type NoteData = {
   _id: string;
@@ -35,11 +35,12 @@ export default function NoteViewModal({ note, onClose }: NoteViewModalProps) {
   let html = "";
   if (note?.editorData) {
     try {
-      const parsed = JSON.parse(note.editorData) as {
-        blocks: Array<{ type: string; data: Record<string, unknown> }>;
-      };
-      html = editorBlocksToHtml(parsed);
-      console.log("html:", html);
+      const parsed = JSON.parse(note.editorData);
+      if (isLegacyEditorJsData(parsed)) {
+        html = legacyEditorJsToHtml(parsed);
+      } else {
+        html = tiptapToHtml(parsed);
+      }
     } catch {
       html = "";
     }

@@ -1,8 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import EditorJS from "@editorjs/editorjs";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FiPlus,
   FiEdit2,
@@ -16,8 +15,22 @@ import {
 import NoteViewModal from "./NoteViewModal";
 import ImageUpload from "../projects/ImageUpload";
 import FileUpload from "./FileUpload";
+import type { TiptapEditorHandle } from "@/components/editor";
 
-const NoteEditor = dynamic(() => import("./NoteEditor"), { ssr: false });
+const TiptapEditor = dynamic(
+  () => import("@/components/editor").then((m) => m.TiptapEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center py-20">
+        <div className="flex items-center gap-2 text-sm text-slate-500">
+          <FiLoader className="animate-spin" />
+          <span>Loading editor...</span>
+        </div>
+      </div>
+    ),
+  },
+);
 
 type NoteInstance = {
   _id: string;
@@ -40,13 +53,17 @@ export default function NotesPage() {
   const [title, setTitle] = useState("");
   const [images, setImages] = useState<string[]>([]);
   const [files, setFiles] = useState<{ url: string; filename: string }[]>([]);
-  const [editorData, setEditorData] = useState("");
+  const [editorContent, setEditorContent] = useState<string>("");
   const [editorKey, setEditorKey] = useState(0);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
-  const editorRef = useRef<EditorJS | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">(
+    "idle",
+  );
+  const editorRef = useRef<TiptapEditorHandle | null>(null);
 
   const [viewingNote, setViewingNote] = useState<NoteInstance | null>(null);
   const [pendingDelete, setPendingDelete] = useState<NoteInstance | null>(null);
@@ -72,17 +89,17 @@ export default function NotesPage() {
   };
 
   useEffect(() => {
-    const notes = () => {
+    const note = () => {
       void fetchNotes();
     };
-    notes();
+    note();
   }, []);
 
   const resetForm = () => {
     setTitle("");
     setImages([]);
     setFiles([]);
-    setEditorData("");
+    setEditorContent("");
     setEditorKey((k) => k + 1);
     setEditingId(null);
     setFormError("");
@@ -94,11 +111,15 @@ export default function NotesPage() {
     setTitle(note.title);
     setImages(note.images ?? []);
     setFiles(note.files ?? []);
-    setEditorData(note.editorData ?? "");
+    setEditorContent(note.editorData ?? "");
     setEditorKey((k) => k + 1);
     setFormError("");
     setFormSuccess("");
   };
+
+  const handleEditorUpdate = useCallback((_json: unknown, html: string) => {
+    setEditorContent(html);
+  }, []);
 
   const handleSubmit = async () => {
     setFormError("");
@@ -117,9 +138,17 @@ export default function NotesPage() {
     setIsSubmitting(true);
 
     try {
-      const outputData = await editorRef.current.save();
+      const json = editorRef.current.getJSON();
+      const content = JSON.stringify(json);
 
-      if (!outputData.blocks.length) {
+      const isEmpty =
+        !json.content ||
+        json.content.length === 0 ||
+        (json.content.length === 1 &&
+          json.content[0].type === "paragraph" &&
+          !json.content[0].content);
+
+      if (isEmpty) {
         setFormError("Note content cannot be empty.");
         setIsSubmitting(false);
         return;
@@ -128,7 +157,7 @@ export default function NotesPage() {
       const payload = {
         ...(editingId ? { id: editingId } : {}),
         title: title.trim(),
-        editorData: JSON.stringify(outputData),
+        editorData: content,
         images,
         files,
       };
@@ -159,9 +188,6 @@ export default function NotesPage() {
       }
 
       resetForm();
-      if (editorRef.current) {
-        editorRef.current.clear();
-      }
     } catch {
       setFormError("Network error. Please try again.");
     } finally {
@@ -238,15 +264,28 @@ export default function NotesPage() {
         </label>
 
         <div className="flex flex-col gap-2">
-          <span className="text-sm font-bold text-slate-700">Content</span>
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-bold text-slate-700">Content</span>
+            {saveStatus !== "idle" && (
+              <span
+                className={`text-xs font-medium ${saveStatus === "saving" ? "text-amber-600" : saveStatus === "saved" ? "text-emerald-600" : ""}`}
+              >
+                {saveStatus === "saving"
+                  ? "Saving..."
+                  : saveStatus === "saved"
+                    ? "Saved"
+                    : ""}
+              </span>
+            )}
+          </div>
           <div className="nm-dent rounded-xl overflow-hidden">
-            <NoteEditor
+            <TiptapEditor
               key={editorKey}
-              holderId="note-editor-create"
-              data={editorData || undefined}
-              onReady={(editor) => {
-                editorRef.current = editor;
-              }}
+              ref={editorRef}
+              content={editorContent || undefined}
+              editable
+              onUpdate={handleEditorUpdate}
+              placeholder="Start writing your note..."
             />
           </div>
         </div>
