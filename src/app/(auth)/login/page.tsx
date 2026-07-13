@@ -181,16 +181,6 @@ export default function LoginPage() {
             </button>
           </form>
         )}
-
-        <p className="mt-6 text-center text-sm text-slate-600">
-          Don&apos;t have an account?
-          <Link
-            href="/register"
-            className="font-bold text-sky-700 outline-none hover:underline focus-visible:underline"
-          >
-            Create one
-          </Link>
-        </p>
       </div>
     </div>
   );

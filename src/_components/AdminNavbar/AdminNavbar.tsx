@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { IconType } from "react-icons";
 import Logo from "../Logo/Logo";
 import { LuLogOut, LuMenu, LuX } from "react-icons/lu";
@@ -25,8 +25,14 @@ const adminNavItems: AdminNavItem[] = [
 
 export default function AdminNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+
+  const handleLogout = useCallback(async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/login");
+  }, [router]);
 
   const closeMenu = () => setIsMenuOpen(false);
   const isNavItemActive = (href: string) =>
@@ -88,13 +94,14 @@ export default function AdminNavbar() {
         </ul>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href="/login"
+          <button
+            type="button"
+            onClick={handleLogout}
             className="nm-protrude hidden h-11 items-center gap-2 rounded-xl px-4 text-sm font-bold text-gray-700 transition-all duration-200 outline-none hover:nm-dent hover:text-sky-700 active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] md:flex"
           >
             <LuLogOut className="text-lg" aria-hidden="true" />
             <span>Logout</span>
-          </Link>
+          </button>
 
           <button
             type="button"
@@ -151,14 +158,17 @@ export default function AdminNavbar() {
             </ul>
 
             <div className="mt-3 border-t border-slate-300/60 pt-3">
-              <Link
-                href="/login"
-                onClick={closeMenu}
+              <button
+                type="button"
+                onClick={() => {
+                  closeMenu();
+                  handleLogout();
+                }}
                 className="nm-dent flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold text-gray-700 transition-all duration-200 outline-none hover:nm-protrude hover:text-sky-700 active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
               >
                 <span>Logout</span>
                 <LuLogOut className="text-lg" aria-hidden="true" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
