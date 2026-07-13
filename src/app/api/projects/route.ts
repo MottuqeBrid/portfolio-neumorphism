@@ -43,7 +43,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     // console.error("Failed to create project:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 },
     );
   }
@@ -65,7 +68,10 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     // console.error("Failed to fetch projects:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 },
     );
   }
@@ -97,7 +103,10 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     // console.error("Failed to delete project:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 },
     );
   }
@@ -130,7 +139,10 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     // console.error("Failed to update project:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 },
     );
   }

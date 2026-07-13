@@ -1,22 +1,13 @@
-type ImgbbUploadResult = {
-  url: string;
-  deleteUrl: string;
-  data: ImgbbResponse["data"];
-  success: boolean;
-  status: number;
-};
-
 type ImgbbResponse = {
   success: boolean;
   status: number;
   data: {
     url: string;
-    delete_url: string;
-    [key: string]: unknown;
+    display_url: string;
   };
 };
 
-const imgbbImageUpload = async (image: File): Promise<ImgbbUploadResult> => {
+const imgbbImageUpload = async (image: File): Promise<string> => {
   const apiKey = process.env.IMGBB_API_KEY;
 
   if (!apiKey) {
@@ -32,17 +23,12 @@ const imgbbImageUpload = async (image: File): Promise<ImgbbUploadResult> => {
   });
 
   const json = (await res.json()) as ImgbbResponse;
-  console.log("imgbb upload response:", json);
 
   if (!res.ok || !json.success) {
     throw new Error(`imgbb upload failed with status ${res.status}`);
   }
 
-  return {
-    ...json,
-    url: json.data.url,
-    deleteUrl: json.data.delete_url,
-  };
+  return json.data.display_url;
 };
 
 export default imgbbImageUpload;
