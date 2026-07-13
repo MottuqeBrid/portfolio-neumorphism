@@ -30,9 +30,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!payload?.text?.trim()) {
+    if (!payload?.editorData?.trim()) {
       return NextResponse.json(
-        { message: "Note text is required" },
+        { message: "Note content is required" },
         { status: 400 },
       );
     }
@@ -41,15 +41,16 @@ export async function POST(req: NextRequest) {
 
     const note = await Note.create({
       title: payload.title.trim(),
-      text: payload.text.trim(),
-      category: payload.category ?? "text",
+      editorData: payload.editorData,
       images: Array.isArray(payload.images)
         ? payload.images.map((item: string) => item.trim()).filter(Boolean)
         : [],
-      file: {
-        url: payload.file?.url?.trim() ?? "",
-        filename: payload.file?.filename?.trim() ?? "",
-      },
+      files: Array.isArray(payload.files)
+        ? payload.files.map((f: { url?: string; filename?: string }) => ({
+            url: f.url?.trim() ?? "",
+            filename: f.filename?.trim() ?? "",
+          }))
+        : [],
     });
 
     return NextResponse.json(
@@ -123,9 +124,9 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    if (!payload?.text?.trim()) {
+    if (!payload?.editorData?.trim()) {
       return NextResponse.json(
-        { message: "Note text is required" },
+        { message: "Note content is required" },
         { status: 400 },
       );
     }
@@ -136,15 +137,16 @@ export async function PATCH(req: NextRequest) {
       id,
       {
         title: payload.title.trim(),
-        text: payload.text.trim(),
-        category: payload.category ?? "text",
+        editorData: payload.editorData,
         images: Array.isArray(payload.images)
           ? payload.images.map((item: string) => item.trim()).filter(Boolean)
           : [],
-        file: {
-          url: payload.file?.url?.trim() ?? "",
-          filename: payload.file?.filename?.trim() ?? "",
-        },
+        files: Array.isArray(payload.files)
+          ? payload.files.map((f: { url?: string; filename?: string }) => ({
+              url: f.url?.trim() ?? "",
+              filename: f.filename?.trim() ?? "",
+            }))
+          : [],
       },
       { new: true },
     );

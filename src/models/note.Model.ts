@@ -3,18 +3,14 @@ import mongoose from "mongoose";
 const noteSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    text: { type: String, required: true }, // The main content of the note in HTML format
+    editorData: { type: String, default: "" }, // New field to store the editor data as a JSON string
     images: [{ type: String }],
-    category: {
-      type: String,
-      enum: ["text", "image", "file", "other"],
-      default: "text",
-      required: true,
-    },
-    file: {
-      url: { type: String },
-      filename: { type: String },
-    },
+    files: [
+      {
+        url: { type: String },
+        filename: { type: String },
+      },
+    ],
   },
   {
     timestamps: true,

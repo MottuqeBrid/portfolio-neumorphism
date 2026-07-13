@@ -13,3 +13,185 @@ body {
 .group:hover [style*="--tint"] {
   border-color: var(--tint);
 }
+
+/* Editor.js */
+.prose-editor .codex-editor {
+  padding: 16px;
+}
+
+.prose-editor .ce-block__content {
+  max-width: 100%;
+}
+
+.prose-editor .ce-toolbar__content {
+  max-width: 100%;
+}
+
+.prose-editor .ce-header {
+  padding: 0;
+}
+
+.prose-editor .cdx-block {
+  padding: 8px 0;
+}
+
+/* Note view prose */
+.prose-note h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.25;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: #1e293b;
+}
+
+.prose-note h2 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-top: 1.125rem;
+  margin-bottom: 0.625rem;
+  color: #1e293b;
+}
+
+.prose-note h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+.prose-note h4 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.45;
+  margin-top: 0.875rem;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+/* Keep the first block flush with the top of the modal body */
+.prose-note > :first-child {
+  margin-top: 0;
+}
+
+.prose-note p {
+  margin-bottom: 0.75rem;
+  line-height: 1.75;
+}
+
+.prose-note ul,
+.prose-note ol {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.prose-note ul {
+  list-style-type: disc;
+}
+
+.prose-note ol {
+  list-style-type: decimal;
+}
+
+.prose-note li {
+  margin-bottom: 0.25rem;
+  line-height: 1.7;
+}
+
+/* Checklist (list tool "checklist" style / checklist tool) */
+.prose-note .prose-checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose-note .prose-checklist .checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.prose-note .prose-checklist input[type="checkbox"] {
+  margin-top: 0.35rem;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  accent-color: #0ea5e9;
+}
+
+.prose-note .prose-checklist .prose-checklist {
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+  padding-left: 1.5rem;
+}
+
+.prose-note blockquote {
+  border-left: 3px solid #0ea5e9;
+  padding-left: 1rem;
+  margin-bottom: 0.75rem;
+  color: #64748b;
+  font-style: italic;
+}
+
+.prose-note blockquote footer {
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  font-style: normal;
+  color: #94a3b8;
+}
+
+.prose-note pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.prose-note code {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.375rem;
+  font-size: 0.8125rem;
+}
+
+.prose-note pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+.prose-note mark {
+  background: #fde68a;
+  border-radius: 0.125rem;
+  padding: 0.0625rem 0.125rem;
+}
+
+.prose-note hr {
+  border: none;
+  border-top: 2px solid #e2e8f0;
+  margin: 1.5rem 0;
+}
+
+.prose-note figure {
+  margin-bottom: 0.75rem;
+}
+
+.prose-note img {
+  max-width: 100%;
+  border-radius: 0.75rem;
+}
+
+.prose-note figcaption {
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  text-align: center;
+}
