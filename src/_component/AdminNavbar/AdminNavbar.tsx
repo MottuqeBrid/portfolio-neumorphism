@@ -18,6 +18,7 @@ const adminNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: "/admin", icon: FiGrid },
   { name: "Projects", href: "/admin/projects", icon: FiFolder },
   { name: "Resume", href: "/admin/resume", icon: FiFileText },
+  { name: "Email", href: "/admin/email", icon: FiMail },
   { name: "Messages", href: "/admin/messages", icon: FiMail },
   { name: "Notes", href: "/admin/notes", icon: FiBook },
 ];

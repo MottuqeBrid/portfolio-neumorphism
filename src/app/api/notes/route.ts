@@ -10,7 +10,10 @@ export async function GET() {
   } catch (error) {
     // console.error("Failed to fetch notes:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }
@@ -27,9 +30,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (!payload?.details?.trim()) {
+    if (!payload?.text?.trim()) {
       return NextResponse.json(
-        { message: "Note details are required" },
+        { message: "Note text is required" },
         { status: 400 },
       );
     }
@@ -38,7 +41,7 @@ export async function POST(req: NextRequest) {
 
     const note = await Note.create({
       title: payload.title.trim(),
-      details: payload.details.trim(),
+      text: payload.text.trim(),
       category: payload.category ?? "text",
       images: Array.isArray(payload.images)
         ? payload.images.map((item: string) => item.trim()).filter(Boolean)
@@ -56,7 +59,10 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     // console.error("Failed to create note:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }
@@ -89,7 +95,10 @@ export async function DELETE(req: NextRequest) {
   } catch (error) {
     // console.error("Failed to delete note:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }
@@ -114,9 +123,9 @@ export async function PATCH(req: NextRequest) {
       );
     }
 
-    if (!payload?.details?.trim()) {
+    if (!payload?.text?.trim()) {
       return NextResponse.json(
-        { message: "Note details are required" },
+        { message: "Note text is required" },
         { status: 400 },
       );
     }
@@ -127,7 +136,7 @@ export async function PATCH(req: NextRequest) {
       id,
       {
         title: payload.title.trim(),
-        details: payload.details.trim(),
+        text: payload.text.trim(),
         category: payload.category ?? "text",
         images: Array.isArray(payload.images)
           ? payload.images.map((item: string) => item.trim()).filter(Boolean)
@@ -151,7 +160,10 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     // console.error("Failed to update note:", error);
     return NextResponse.json(
-      { message: "Internal Server Error" },
+      {
+        message: "Internal Server Error",
+        error: error instanceof Error ? error.message : String(error),
+      },
       { status: 500 },
     );
   }

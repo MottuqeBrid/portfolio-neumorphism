@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import Marquee from "react-fast-marquee";
 import { BsWhatsapp } from "react-icons/bs";
 import { FaFacebook } from "react-icons/fa";
@@ -17,6 +18,8 @@ import {
   SiReact,
   SiTailwindcss,
 } from "react-icons/si";
+
+type ResumeData = { url: string; filename: string } | null;
 
 type TechItem = {
   name: string;
@@ -62,6 +65,23 @@ const socialLinks = [
 ];
 
 export default function Hero({ id }: { id?: string }) {
+  const [resume, setResume] = useState<ResumeData>(null);
+
+  useEffect(() => {
+    let isActive = true;
+    fetch("/api/admin/resume", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (isActive && data?.resume?.url) {
+          setResume({ url: data.resume.url, filename: data.resume.filename });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
   return (
     <section
       id={id}
@@ -115,13 +135,17 @@ export default function Hero({ id }: { id?: string }) {
         </ul>
 
         <div className="flex flex-wrap items-center gap-4">
-          <button
-            type="button"
-            className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
-          >
-            <span>Download Resume</span>
-            <FiDownload className="text-lg" aria-hidden="true" />
-          </button>
+          {resume ? (
+            <a
+              href={resume.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
+            >
+              <span>Download Resume</span>
+              <FiDownload className="text-lg" aria-hidden="true" />
+            </a>
+          ) : null}
 
           <div className="flex flex-wrap gap-3" aria-label="Social links">
             {socialLinks.map((link) => {

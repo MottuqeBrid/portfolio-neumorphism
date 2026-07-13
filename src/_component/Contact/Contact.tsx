@@ -1,9 +1,9 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { IconType } from "react-icons";
-import { FiMapPin, FiSend } from "react-icons/fi";
+import { FiMapPin, FiSend, FiLoader, FiCheck, FiX } from "react-icons/fi";
 import { BsWhatsapp } from "react-icons/bs";
 import { GrGithub, GrLinkedin } from "react-icons/gr";
 
@@ -43,12 +43,47 @@ const fieldClass =
   "nm-dent w-full rounded-xl bg-transparent px-4 py-3 text-sm font-medium text-slate-700 placeholder:text-slate-400 outline-none transition-all duration-200 focus:text-sky-700 focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]";
 
 export default function Contact({ id }: { id: string }) {
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
+    "idle",
+  );
+  const [errorMsg, setErrorMsg] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setStatus("sent");
-    event.currentTarget.reset();
+    setStatus("sending");
+    setErrorMsg("");
+
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const payload = {
+      name: String(data.get("name") ?? "").trim(),
+      email: String(data.get("email") ?? "").trim(),
+      subject: String(data.get("subject") ?? "").trim(),
+      message: String(data.get("message") ?? "").trim(),
+    };
+
+    try {
+      const res = await fetch("/api/emails", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const body = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setErrorMsg(body?.message || "Unable to send message. Try again.");
+        setStatus("error");
+        return;
+      }
+
+      setStatus("sent");
+      formRef.current?.reset();
+    } catch {
+      setErrorMsg("Network error. Check your connection and try again.");
+      setStatus("error");
+    }
   };
 
   return (
@@ -123,6 +158,7 @@ export default function Contact({ id }: { id: string }) {
         </div>
 
         <form
+          ref={formRef}
           onSubmit={handleSubmit}
           className="nm-protrude flex flex-col gap-4 rounded-3xl p-6 sm:p-7"
         >
@@ -176,21 +212,35 @@ export default function Contact({ id }: { id: string }) {
           <div className="mt-1 flex flex-wrap items-center gap-4">
             <button
               type="submit"
-              className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
+              disabled={status === "sending"}
+              className="nm-protrude inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-black text-sky-700 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:nm-protrude"
             >
-              <span>Send message</span>
-              <FiSend className="text-lg" aria-hidden="true" />
+              {status === "sending" ? (
+                <FiLoader className="animate-spin text-lg" aria-hidden="true" />
+              ) : (
+                <FiSend className="text-lg" aria-hidden="true" />
+              )}
+              <span>
+                {status === "sending" ? "Sending..." : "Send message"}
+              </span>
             </button>
 
-            <p
-              role="status"
-              aria-live="polite"
-              className={`text-sm font-bold text-emerald-600 transition-opacity duration-200 ${
-                status === "sent" ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              Thanks! I&apos;ll get back to you soon.
-            </p>
+            {status === "sent" ? (
+              <p
+                role="status"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald-600"
+              >
+                <FiCheck size={16} aria-hidden="true" />
+                Thanks! I&apos;ll get back to you soon.
+              </p>
+            ) : null}
+
+            {status === "error" ? (
+              <p role="alert" className="inline-flex items-center gap-1.5 text-sm font-bold text-rose-600">
+                <FiX size={16} aria-hidden="true" />
+                {errorMsg}
+              </p>
+            ) : null}
           </div>
         </form>
       </div>

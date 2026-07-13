@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const noteSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    details: { type: String, required: true },
+    text: { type: String, required: true }, // The main content of the note in HTML format
     images: [{ type: String }],
     category: {
       type: String,

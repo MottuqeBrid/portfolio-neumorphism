@@ -7,6 +7,8 @@ import Logo from "../Logo/Logo";
 import { LuLogIn, LuMenu, LuX } from "react-icons/lu";
 import { BiDownload } from "react-icons/bi";
 
+type ResumeData = { url: string; filename: string } | null;
+
 const navItems = [
   { name: "Home", href: "/#hero", hash: "" },
   { name: "About", href: "/#about", hash: "#about" },
@@ -20,12 +22,28 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeHash, setActiveHash] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
+  const [resume, setResume] = useState<ResumeData>(null);
 
   const isHome = pathname === "/";
   const isLogin = pathname === "/login";
   const closeMenu = () => setIsMenuOpen(false);
   const isNavItemActive = (hash: string) =>
     isHome && (hash ? activeHash === hash : activeHash === "");
+
+  useEffect(() => {
+    let isActive = true;
+    fetch("/api/admin/resume", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (isActive && data?.resume?.url) {
+          setResume({ url: data.resume.url, filename: data.resume.filename });
+        }
+      })
+      .catch(() => {});
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   useEffect(() => {
     const updateActiveHash = () => {
@@ -57,13 +75,31 @@ export default function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const menu = () => {
+      closeMenu();
+    };
+    menu();
+  }, [pathname]);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
       <nav
-        className={`mx-auto flex items-center justify-between gap-4 transition-all duration-300 ${
+        className={`mx-auto flex items-center justify-between gap-3 transition-all duration-300 sm:gap-4 ${
           isScrolled
             ? "nm-protrude mt-2 max-w-7xl rounded-2xl bg-[#e0e5ec]/80 px-3 py-2.5 backdrop-blur-md sm:mt-3 sm:px-4"
-            : "mt-0 max-w-7xl rounded-none bg-transparent px-4 py-4 sm:px-6 lg:px-8"
+            : "mt-0 max-w-7xl rounded-none bg-transparent px-3 py-3 sm:px-4 sm:py-4 lg:px-8"
         }`}
       >
         <Logo />
@@ -102,13 +138,18 @@ export default function Navbar() {
               <LuLogIn className="text-lg" aria-hidden="true" />
               <span>Admin</span>
             </Link>
-            <button
-              type="button"
-              className="nm-protrude flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-bold text-gray-700 transition-all duration-200 outline-none hover:nm-dent hover:text-sky-700 active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
-            >
-              <span>Resume</span>
-              <BiDownload className="text-xl" aria-hidden="true" />
-            </button>
+            {resume ? (
+              <a
+                href={resume.url}
+                target="_blank"
+                download={resume.filename}
+                rel="noopener noreferrer"
+                className="nm-protrude flex h-11 items-center gap-2 rounded-xl px-4 text-sm font-bold text-gray-700 transition-all duration-200 outline-none hover:nm-dent hover:text-sky-700 active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
+              >
+                <span>Resume</span>
+                <BiDownload className="text-xl" aria-hidden="true" />
+              </a>
+            ) : null}
           </div>
 
           <button
@@ -133,16 +174,16 @@ export default function Navbar() {
       <div
         id="mobile-navigation"
         className={`overflow-hidden transition-all duration-300 lg:hidden ${
-          isMenuOpen ? "max-h-128 opacity-100" : "max-h-0 opacity-0"
+          isMenuOpen ? "opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         <div
-          className={`mx-auto px-4 pb-5 pt-3 transition-all duration-300 sm:px-6 ${
+          className={`mx-auto px-3 pb-5 pt-3 transition-all duration-300 sm:px-4 ${
             isScrolled ? "max-w-6xl" : "max-w-7xl"
           }`}
         >
           <div className="nm-protrude rounded-2xl bg-[#e0e5ec]/80 p-3 backdrop-blur-md">
-            <ul className="grid gap-2 sm:grid-cols-2">
+            <ul className="flex flex-col gap-1.5 sm:grid sm:grid-cols-2 sm:gap-2">
               {navItems.map((item) => {
                 const isActive = isNavItemActive(item.hash);
 
@@ -170,9 +211,9 @@ export default function Navbar() {
               })}
             </ul>
 
-            <div className="mt-3 grid gap-2 border-t border-slate-300/60 pt-3 md:hidden">
+            <div className="mt-3 flex flex-col gap-2 border-t border-slate-300/60 pt-3 sm:grid sm:grid-cols-2 md:hidden">
               <Link
-                href="/login"
+                href="/admin"
                 onClick={closeMenu}
                 className={`flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec] ${
                   isLogin
@@ -180,17 +221,22 @@ export default function Navbar() {
                     : "nm-dent text-gray-700 hover:nm-protrude hover:text-sky-700"
                 }`}
               >
-                <span>Login</span>
+                <span>Admin</span>
                 <LuLogIn className="text-lg" aria-hidden="true" />
               </Link>
-              <button
-                type="button"
-                onClick={closeMenu}
-                className="nm-dent flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold text-gray-700 transition-all duration-200 outline-none hover:nm-protrude hover:text-sky-700 active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
-              >
-                <span>Resume</span>
-                <BiDownload className="text-xl" aria-hidden="true" />
-              </button>
+              {resume ? (
+                <a
+                  href={resume.url}
+                  target="_blank"
+                  download={resume.filename}
+                  rel="noopener noreferrer"
+                  onClick={closeMenu}
+                  className="nm-dent flex items-center justify-between rounded-xl px-4 py-3 text-sm font-bold text-gray-700 transition-all duration-200 outline-none hover:nm-protrude hover:text-sky-700 active:nm-pressed focus-visible:ring-2 focus-visible:ring-sky-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#e0e5ec]"
+                >
+                  <span>Resume</span>
+                  <BiDownload className="text-xl" aria-hidden="true" />
+                </a>
+              ) : null}
             </div>
           </div>
         </div>
