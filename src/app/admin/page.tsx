@@ -91,9 +91,7 @@ export default function Home() {
           setFetchError("Unable to load emails.");
           return;
         }
-        setEmails(
-          (data.emails as Email[]).filter((e) => !e.isDeleted),
-        );
+        setEmails((data.emails as Email[]).filter((e) => !e.isDeleted));
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") return;
         setFetchError("Network error while loading emails.");
@@ -212,9 +210,7 @@ export default function Home() {
             <p className="text-2xl font-black text-slate-800">
               {emails.length}
             </p>
-            <p className="text-xs font-semibold text-slate-500">
-              Total emails
-            </p>
+            <p className="text-xs font-semibold text-slate-500">Total emails</p>
           </div>
         </div>
         <div className="nm-protrude flex items-center gap-4 rounded-2xl p-5">
@@ -412,9 +408,7 @@ export default function Home() {
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(
                   (p) =>
-                    p === 1 ||
-                    p === totalPages ||
-                    Math.abs(p - safePage) <= 1,
+                    p === 1 || p === totalPages || Math.abs(p - safePage) <= 1,
                 )
                 .reduce<(number | "ellipsis")[]>((acc, p, i, arr) => {
                   if (i > 0 && p - (arr[i - 1] as number) > 1) {
@@ -450,7 +444,9 @@ export default function Home() {
               <button
                 type="button"
                 disabled={safePage >= totalPages}
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
                 className="nm-protrude inline-flex h-10 items-center justify-center rounded-xl px-4 text-sm font-bold text-slate-600 transition-all duration-200 outline-none hover:nm-dent active:nm-pressed disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:nm-protrude"
               >
                 Next
@@ -511,7 +507,7 @@ export default function Home() {
 
             <div className="nm-dent max-h-[60vh] overflow-y-auto rounded-2xl p-5 sm:p-6">
               <div
-                className="prose-note text-sm leading-relaxed text-slate-700"
+                className=" text-sm leading-relaxed text-slate-700"
                 dangerouslySetInnerHTML={{ __html: viewingEmail.html }}
               />
             </div>

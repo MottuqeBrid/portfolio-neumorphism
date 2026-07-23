@@ -622,7 +622,7 @@ body {
 
 .dark .prose-note th,
 .dark .prose-note td {
-  border-color: #334155;
+  /* border-color: #334155; */
 }
 
 .dark .prose-note th {

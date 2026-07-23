@@ -433,8 +433,9 @@ export default function EmailPage() {
 
             <div className="nm-dent max-h-[50vh] overflow-y-auto rounded-2xl p-5">
               <div
-                className="prose-note text-sm leading-relaxed text-slate-700"
+                className=" text-sm leading-relaxed text-slate-700"
                 dangerouslySetInnerHTML={{ __html: viewingEmail.message }}
+                // srcDoc={viewingEmail.message}
               />
             </div>
 
